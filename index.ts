@@ -67,8 +67,9 @@ server.tool(
             type: "text",
             text: [
               `URL: ${url}`,
-              `Content: ${content}`,
+              `Start index: ${args.start_index}`,
               `Remaining content length: ${remainingContentLength}`,
+              `Content: ${content}`,
             ].join("\n"),
           },
         ],
