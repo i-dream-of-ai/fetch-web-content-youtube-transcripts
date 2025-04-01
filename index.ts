@@ -7,11 +7,12 @@ import { gotScraping } from "got-scraping"
 import { toMarkdown } from "./markdown"
 import { YoutubeTranscript } from "./youtube"
 import { toVideoTimestamp } from "./utils"
+import { version } from "./package.json"
 
 const server = new McpServer(
   {
     name: "fetch-mcp",
-    version: "0.0.0",
+    version,
   },
   {
     capabilities: {
@@ -22,13 +23,13 @@ const server = new McpServer(
 
 server.tool(
   "fetch_url",
-  "Fetch a URL",
+  "Fetch a URL, support HTML, text, and image",
   {
     url: z.string().describe("The URL to fetch"),
     raw: z
       .boolean()
       .nullish()
-      .describe("Return raw HTML instead of Markdown")
+      .describe("Return raw HTML instead of Markdown for HTML pages")
       .default(false),
     max_length: z
       .number()
@@ -43,10 +44,32 @@ server.tool(
     const url = /^https?\:\/\//.test(args.url)
       ? args.url
       : `https://${args.url}`
+
     const res = await gotScraping(url)
 
     if (res.ok) {
-      let content = args.raw ? res.body : toMarkdown(res.body)
+      const contentType = res.headers["content-type"]
+
+      if (!contentType || !contentType.includes("text/")) {
+        const isImage = contentType?.includes("image/")
+        return {
+          content: [
+            isImage && contentType
+              ? {
+                  type: "image",
+                  data: res.rawBody.toString("base64"),
+                  mimeType: contentType,
+                }
+              : {
+                  type: "text",
+                  text: `Unsupported mime type: ${contentType}`,
+                },
+          ],
+        }
+      }
+
+      const isHTML = contentType.includes("html")
+      let content = args.raw || !isHTML ? res.body : toMarkdown(res.body)
       let remainingContentLength = 0
 
       if (args.start_index) {
