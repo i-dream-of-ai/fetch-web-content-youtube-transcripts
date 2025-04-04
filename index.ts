@@ -156,7 +156,7 @@ server.tool(
 const port = Number(process.env.PORT || "3000")
 
 if (process.argv.includes("--http")) {
-  const endpoint = "/http"
+  const endpoint = "/mcp"
 
   const transport = new RestServerTransport({ port, endpoint })
   await server.connect(transport)
