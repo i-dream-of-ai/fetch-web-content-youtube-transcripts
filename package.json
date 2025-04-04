@@ -1,6 +1,6 @@
 {
   "name": "fetch-mcp",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "scripts": {
     "dev": "PORT=4567 bunx tsx --watch ./index.ts",
