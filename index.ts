@@ -3,6 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js"
 import { z } from "zod"
+import { RestServerTransport } from "@chatmcp/sdk/server/rest.js"
 import { gotScraping } from "got-scraping"
 import { toMarkdown } from "./markdown"
 import { YoutubeTranscript } from "./youtube"
@@ -152,13 +153,22 @@ server.tool(
   }
 )
 
-if (process.argv.includes("--sse")) {
+const port = Number(process.env.PORT || "3000")
+
+if (process.argv.includes("--http")) {
+  const endpoint = "/http"
+
+  const transport = new RestServerTransport({ port, endpoint })
+  await server.connect(transport)
+
+  await transport.startServer()
+} else if (process.argv.includes("--sse")) {
   const transports = new Map<string, SSEServerTransport>()
-  const port = Number(process.env.PORT || "3000")
 
   const app = Polka()
 
   app.get("/sse", async (req, res) => {
+    console.log(req)
     const transport = new SSEServerTransport("/messages", res)
     transports.set(transport.sessionId, transport)
     res.on("close", () => {

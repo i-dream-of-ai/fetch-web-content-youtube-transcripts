@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "type": "module",
   "scripts": {
+    "dev": "PORT=4567 bunx tsx --watch ./index.ts",
     "build": "bun build ./index.ts --packages external --outdir dist",
     "prepublishOnly": "npm run build"
   },
@@ -19,6 +20,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@chatmcp/sdk": "^1.0.5",
     "@modelcontextprotocol/sdk": "^1.8.0",
     "got-scraping": "^4.1.1",
     "polka": "^0.5.2",

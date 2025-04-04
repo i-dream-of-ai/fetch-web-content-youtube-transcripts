@@ -12,6 +12,9 @@ npx -y fetch-mcp
 
 # sse server
 npx -y fetch-mcp --sse
+
+# streamable http server
+npx -y fetch-mcp --http
 ```
 
 ## Tools
