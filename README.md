@@ -13,8 +13,10 @@ npx -y fetch-mcp
 # sse server
 npx -y fetch-mcp --sse
 
-# streamable http server
+# streamable http server at /mcp
 npx -y fetch-mcp --http
+# custom endpoint
+npx -y fetch-mcp --http /my-mcp
 ```
 
 ## Tools
